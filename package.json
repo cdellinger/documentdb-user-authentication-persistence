@@ -1,6 +1,6 @@
 {
   "name": "documentdb-user-authentication-persistence",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Persistence logic on Azure to handle user authentication data needs",
   "main": "./lib/index.js",
   "scripts": {
