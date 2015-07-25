@@ -161,6 +161,34 @@ describe('DB Test', function() {
 		});
 	});
 
+
+	describe('Create user with tenant with duplicated strategy', function () {
+		it('should fail to create user', function (done) {
+			var usr = new UserSchema();
+			usr.userHandle = '|||TESTUSER3|||';
+			usr.tenant = testTenant;
+			usr.addStrategy('###TESTUSER2_TWITTER!###', 'TWITTER', '12345');
+
+			db.create(usr, function(err, data){
+				err.message.should.equal('This strategy is already in use');
+				done();
+			});
+		});
+	});
+
+	describe('Create user without tenant with duplicated strategy', function () {
+		it('should fail to create user', function (done) {
+			var usr = new UserSchema();
+			usr.userHandle = '|||TESTUSER3|||';
+			usr.addStrategy('###TESTUSER1_TWITTER!###', 'TWITTER', '12345');
+
+			db.create(usr, function(err, data){
+				err.message.should.equal('This strategy is already in use');
+				done();
+			});
+		});
+	});
+
 	describe('Remove user with tenant', function () {
 		it('should remove matching user', function (done) {
 			db.get(tenantUserId, function(err, user){
