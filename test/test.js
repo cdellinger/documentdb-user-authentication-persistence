@@ -143,6 +143,24 @@ describe('DB Test', function() {
 		});
 	});
 
+	describe('Create duplicate user with tenant', function () {
+		it('should fail to create duplicate user', function (done) {
+			db.create(tenantUser, function(err, data){
+				err.message.should.equal('User exists already with this user handle');
+				done();
+			});
+		});
+	});
+
+	describe('Create duplicate user without tenant', function () {
+		it('should fail to create duplicate user', function (done) {
+			db.create(tenantlessUser, function(err, data){
+				err.message.should.equal('User exists already with this user handle');
+				done();
+			});
+		});
+	});
+
 	describe('Remove user with tenant', function () {
 		it('should remove matching user', function (done) {
 			db.get(tenantUserId, function(err, user){
