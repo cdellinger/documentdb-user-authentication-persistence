@@ -10,27 +10,14 @@ var collectionUrl = process.env.TEST_DOCUMENTDB_COLLECTION_URL;
 var documentdb_user_authentication_persistence = require('../lib/index');
 var db = new documentdb_user_authentication_persistence(host, masterKey, collectionUrl);
 
-/*
-db.get('5c31903f-23a6-8fc9-2cc9-bab2d510b7a9', function(err, data){
-	console.log(err);
-	console.log(data);
-});
-*/
 
-/*
-db.create('TWITTER', 'gdellinger', 'token2345', 'gdellinger', 'gdellinger@gmail.com', function(err, data){
-	console.log(err);
-	console.log(data);
-});
-*/
-
+//test data
 var UserSchema = require('../lib/schema');
 var tenantlessUser = new UserSchema();
 var tenantlessUserId = '';
 
 tenantlessUser.userHandle = '|||TESTUSER1|||';
 tenantlessUser.addStrategy('###TESTUSER1_TWITTER!###', 'TWITTER', '12345');
-
 
 
 var testTenant = '#TEST_TENANT#';
@@ -40,7 +27,7 @@ var tenantUserId = '';
 tenantUser.userHandle = '|||TESTUSER2|||';
 tenantUser.tenant = testTenant;
 tenantUser.addStrategy('###TESTUSER2_TWITTER!###', 'TWITTER', '12345');
-
+//end of test data
 
 
 describe('DB Test', function() {
