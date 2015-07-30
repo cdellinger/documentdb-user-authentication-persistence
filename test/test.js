@@ -27,13 +27,63 @@ var tenantUserId = '';
 tenantUser.userHandle = '|||TESTUSER2|||';
 tenantUser.tenant = testTenant;
 tenantUser.addStrategy('###TESTUSER2_TWITTER!###', 'TWITTER', '12345');
+
+var passwordTenantUser = new UserSchema();
+var passwordTenantUserId = '';
+var passwordTenantUserPassword = '###PASSWORD1###'; 
+passwordTenantUser.userHandle = '||||TESTUSER3|||';
+passwordTenantUser.tenant = '#TEST_TENANT#';
+passwordTenantUser.addLocalStrategy(passwordTenantUser.userHandle, passwordTenantUserPassword);
+
 //end of test data
+
 
 
 describe('DB Test', function() {
 	before(function(){
 
 	});
+
+	describe('Save Password Tenant User', function () {
+		it('should save successfully', function (done) {
+			db.create(passwordTenantUser, function(err, data){
+				if (err) throw err;
+				passwordTenantUserId = data.id;
+				done();
+			});
+		});
+	});
+
+	describe('Password Login Tenant User', function () {
+		it('should login successfully', function (done) {
+			db.passwordLogin(passwordTenantUser.userHandle, passwordTenantUserPassword, passwordTenantUser.tenant, function(err, user){
+				if (err) throw err;
+				user.id.should.equal(passwordTenantUserId);
+				done();
+			});
+		});
+	});
+
+	describe('Failed Password Login Tenant User', function () {
+		it('should not login', function (done) {
+			db.passwordLogin(passwordTenantUser.userHandle, passwordTenantUserPassword + 'XXX', passwordTenantUser.tenant, function(err, user){
+				if (err) throw err;
+				should.equal(user, undefined);
+				done();
+			});
+		});
+	});
+
+	describe('Failed Login, Valid Password, Invalid  Login Tenant User', function () {
+		it('should not login', function (done) {
+			db.passwordLogin(passwordTenantUser.userHandle, passwordTenantUserPassword, '', function(err, user){
+				if (err) throw err;
+				should.equal(user, undefined);
+				done();
+			});
+		});
+	});
+
 	describe('Save With Tenant', function () {
 		it('should persist without error', function (done) {
 			db.create(tenantUser, function(err, data){
@@ -204,6 +254,18 @@ describe('DB Test', function() {
 	describe('Remove user without tenant', function () {
 		it('should remove matching user', function (done) {
 			db.get(tenantlessUserId, function(err, user){
+				if (err) throw err;
+				db.remove(user._self, function(err2, data){
+					if (err2) throw err2;
+					done();
+				});
+			});
+		});
+	});
+
+	describe('Remove password tenant user', function () {
+		it('should remove matching user', function (done) {
+			db.get(passwordTenantUserId, function(err, user){
 				if (err) throw err;
 				db.remove(user._self, function(err2, data){
 					if (err2) throw err2;
